@@ -66,6 +66,12 @@ public partial class MainForm : Form
 
         this.KeyDown += OnTextBoxCodeKeyDown;
 
+        _changesKeeper.ChangesOccurred += (_, args) =>
+        {
+            buttonBack.Enabled = editBack.Enabled = args.CanBackChanges;
+            buttonForward.Enabled = buttonForward.Enabled = args.CanForwardChanges;
+        };
+
 
         testButton.Visible = false;
         //testButton.Click += (_, _) =>
