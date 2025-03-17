@@ -1,0 +1,143 @@
+﻿namespace maxembler
+{
+    public partial class MainForm
+    {
+        private void OpenFile(object? sender, EventArgs args)
+        {
+            SafeSave();
+            OpenFileDialog dialog = new OpenFileDialog();
+            dialog.Filter = "MAXEMBLER FILE|*.mxblr";
+            dialog.Multiselect = false;
+
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                _fileName = dialog.FileName;
+                textBoxCode.Text = File.ReadAllText(_fileName);
+                _currentIndex = textBoxCode.Text.Length - 1;
+                textBoxCode.SelectionStart = _currentIndex;
+                _changesKeeper.ClearChanges();
+            }
+
+            textBoxCode.Focus();
+        }
+
+        private async void SaveFile(object? sender, EventArgs args)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+            
+            dialog.Filter = "MAXEMBLER FILE|*.mxblr";
+
+            if (!string.IsNullOrEmpty(_fileName))
+            {
+                dialog.FileName = _fileName;
+                await File.WriteAllTextAsync(dialog.FileName, textBoxCode.Text);
+
+            }
+            else if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                await File.WriteAllTextAsync(dialog.FileName, textBoxCode.Text);
+                _fileName = dialog.FileName;
+            }
+
+            _changesKeeper.ClearChanges();
+
+            textBoxCode.Focus();
+        }
+
+        private async void SaveAsFile(object? sender, EventArgs args)
+        {
+            SaveFileDialog dialog = new SaveFileDialog();
+
+
+            dialog.Filter = "MAXEMBLER FILE|*.mxblr";
+
+            if (!string.IsNullOrEmpty(_fileName))
+            {
+                dialog.FileName = _fileName;
+            }
+            if (dialog.ShowDialog() == DialogResult.OK)
+            {
+                await File.WriteAllTextAsync(dialog.FileName, textBoxCode.Text);
+                _fileName = dialog.FileName;
+            }
+
+            _changesKeeper.ClearChanges();
+
+            textBoxCode.Focus();
+        }
+
+        private void NewFile(object? sender, EventArgs args)
+        {
+            SafeSave();
+            _changesKeeper.ClearChanges();
+            _currentIndex = 0;
+            textBoxCode.Text = _fileName = string.Empty;
+            _changesKeeper.AddChanges(textBoxCode.Text);
+            
+            textBoxCode.Focus();
+        }
+
+        private void BackChanges(object? sender, EventArgs args)
+        {
+            _textCommand = true;
+            textBoxCode.Text = _changesKeeper.GoBack();
+
+            textBoxCode.Focus();
+        }
+
+        private void ForwardChanges(object? sender, EventArgs args)
+        {
+            _textCommand = true;
+            textBoxCode.Text = _changesKeeper.GoForward();
+
+            textBoxCode.Focus();
+        }
+
+        private void CopyText(object? sender, EventArgs args)
+        {
+            var copiedText = textBoxCode.SelectedText;
+            if (!string.IsNullOrEmpty(copiedText))
+            {
+                Clipboard.SetText(copiedText);
+            }
+
+            textBoxCode.Focus();
+        }
+
+        private void CutText(object? sender, EventArgs args)
+        {
+            var copiedText = textBoxCode.SelectedText;
+            textBoxCode.Text = textBoxCode.Text[..textBoxCode.SelectionStart] + textBoxCode.Text[(textBoxCode.SelectionStart + textBoxCode.SelectionLength)..];
+            if (!string.IsNullOrEmpty(copiedText))
+                Clipboard.SetText(copiedText);
+
+            textBoxCode.Focus();
+        }
+
+        private void PasteText(object? sender, EventArgs args)
+        {
+            var text = Clipboard.GetText();
+
+            if (string.IsNullOrEmpty(text)) return;
+            var index = textBoxCode.SelectionStart;
+            textBoxCode.Text = textBoxCode.Text.Insert(textBoxCode.SelectionStart, text ?? "");
+            textBoxCode.SelectionStart = index + text.Length;
+
+            textBoxCode.Focus();
+        }
+
+        private void SelectAll(object? sender, EventArgs args)
+        {
+            textBoxCode.SelectAll();
+
+            textBoxCode.Focus();
+        }
+
+        private void DeleteText(object? sender, EventArgs args)
+        {
+            textBoxCode.Text = textBoxCode.Text.Remove(textBoxCode.SelectionStart, textBoxCode.SelectionLength);
+
+            textBoxCode.Focus();
+        }
+    }
+}
