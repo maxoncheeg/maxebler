@@ -1,4 +1,6 @@
-﻿namespace maxembler
+﻿using System.Text.RegularExpressions;
+
+namespace maxembler
 {
     public partial class MainForm
     {
@@ -138,6 +140,36 @@
             textBoxCode.Text = textBoxCode.Text.Remove(textBoxCode.SelectionStart, textBoxCode.SelectionLength);
 
             textBoxCode.Focus();
+        }
+
+        private void RunCode(object? sender, EventArgs args)
+        {
+            var matches = Regex.Matches(textBoxCode.Text,
+                @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)", RegexOptions.IgnoreCase);
+
+            var newLineIndexes = textBoxCode.Text.Index().Where(tuple => tuple.Item is '\n' or '\v')
+                .Select(tuple => tuple.Index).ToList();
+            newLineIndexes.Add(textBoxCode.Text.Length);
+
+            string result = "";
+            result += $"\tВсего найдено ссылок: {matches.Count}{Environment.NewLine}";
+            if (matches.Count > 0) result += $"Результаты:{Environment.NewLine}";
+            
+            int position = 0, line = 0;
+            foreach (Match match in matches)
+            {
+                for (int i = 0; i < newLineIndexes.Count; i++)
+                {
+                    if (match.Index >= newLineIndexes[i]) continue;
+                    position = i > 0 ? match.Index - newLineIndexes[i - 1] : match.Index + 1;
+                    line = i + 1;
+                    break;
+                }
+                
+                result += $"({line}:{position}): {match.Value}{Environment.NewLine}";
+            }
+            
+            textBoxError.Text = result;
         }
     }
 }

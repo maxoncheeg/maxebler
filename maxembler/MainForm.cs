@@ -1,4 +1,5 @@
 using System.Security.Policy;
+using System.Text.RegularExpressions;
 using maxembler.Models;
 
 namespace maxembler;
@@ -57,9 +58,7 @@ public partial class MainForm : Form
             helpForm.ShowDialog();
         };
 
-        runCode.Click += (_, _) =>
-            textBoxError.Text =
-                $"ERROR: ОШИБКА СИНТАКСИСА В СТРОКЕ. НЕТ ТАКОЙ ФУНКЦИИ (symbol №{textBoxCode.Text.Length + 1})";
+        runCode.Click += RunCode;
         textBoxError.ReadOnly = true;
 
         KeyPreview = true;
@@ -72,21 +71,28 @@ public partial class MainForm : Form
             buttonForward.Enabled = buttonForward.Enabled = args.CanForwardChanges;
         };
 
+        textBoxCode.Focus();
 
-        testButton.Visible = false;
-        //testButton.Click += (_, _) =>
-        //{
-        //    var searchText = "https";
-        //    var text = textBoxCode.Text;
-        //    var index = text.IndexOf(searchText);
+        testButton.Visible = true;
+        textBoxCode.DetectUrls = false;
+        testButton.Click += (_, _) =>
+        {
+     
+            var text = textBoxCode.Text;
 
-        //    textBoxCode.SelectionStart = index;
-        //    textBoxCode.SelectionLength = searchText.Length;
-
-        //    textBoxCode.SelectionColor = Color.Orange;
-
-        //    textBoxCode.SelectionLength = 0;
-        //};
+            var result = Regex.Matches(text,
+                @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)", RegexOptions.IgnoreCase);
+            textBoxCode.SelectionColor = Color.Orange;
+            foreach (Match match in result)
+            {
+                textBoxCode.SelectionStart = match.Index;
+                textBoxCode.SelectionLength = match.Length;
+                textBoxCode.SelectionColor = Color.Orange;
+                textBoxCode.SelectionLength = 0;
+            }
+            textBoxCode.SelectionColor = Color.Black;
+            textBoxCode.ForeColor = Color.Black;
+        };
     }
 
     private void OnTextBoxCodeKeyDown(object? sender, KeyEventArgs e)
@@ -118,6 +124,23 @@ public partial class MainForm : Form
         }
 
         _changesKeeper.AddChanges(textBoxCode.Text);
+        _currentIndex = textBoxCode.SelectionStart;
+        
+        
+        var result = Regex.Matches(textBoxCode.Text,
+            @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)", RegexOptions.IgnoreCase);
+        textBoxCode.SelectionColor = Color.Orange;
+        foreach (Match match in result)
+        {
+            textBoxCode.SelectionStart = match.Index;
+            textBoxCode.SelectionLength = match.Length;
+            textBoxCode.SelectionColor = Color.Orange;
+            textBoxCode.SelectionLength = 0;
+        }
+        
+        textBoxCode.SelectionStart = _currentIndex;
+        textBoxCode.SelectionColor = Color.Black;
+        textBoxCode.ForeColor = Color.Black;
     }
 
     private void FormLoad(object sender, EventArgs e)

@@ -221,6 +221,7 @@ partial class MainForm
         // 
         // buttonNew
         // 
+        buttonNew.BackgroundImage = global::maxembler.Properties.Resources.Снимок_экрана_2025_03_06_132101;
         buttonNew.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
         buttonNew.Location = new System.Drawing.Point(12, 30);
         buttonNew.Name = "buttonNew";
@@ -301,9 +302,9 @@ partial class MainForm
         // textBoxCode
         // 
         textBoxCode.BorderStyle = System.Windows.Forms.BorderStyle.None;
-        textBoxCode.Location = new System.Drawing.Point(41, 86);
+        textBoxCode.Location = new System.Drawing.Point(29, 86);
         textBoxCode.Name = "textBoxCode";
-        textBoxCode.Size = new System.Drawing.Size(885, 279);
+        textBoxCode.Size = new System.Drawing.Size(897, 279);
         textBoxCode.TabIndex = 12;
         textBoxCode.Text = "";
         // 
@@ -369,7 +370,7 @@ partial class MainForm
     private ToolStripMenuItem help;
     private ToolStripMenuItem оПрограммеToolStripMenuItem;
     private TextBox textBoxError;
-    private Button buttonNew;
+    private System.Windows.Forms.Button buttonNew;
     private Button buttonOpen;
     private Button buttonSave;
     private Button buttonBack;
