@@ -10,6 +10,9 @@ public partial class MainForm : Form
     private bool _textCommand = false;
     private int _currentIndex = 0;
 
+    private readonly string _pattern =
+        @"(http(s)?:\/\/.)?(www\.)?([a-z0-9]+[-a-z0-9]*[a-z0-9]+\.)+[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&\/=]*)";
+
     private IChangesKeeper _changesKeeper = new MemoryChangesKeeper();
 
     private bool SaveNeeded => _changesKeeper.HasChanges &&
@@ -59,6 +62,7 @@ public partial class MainForm : Form
         };
 
         runCode.Click += RunCode;
+        buttonRunCode.Click += RunCode;
         textBoxError.ReadOnly = true;
 
         KeyPreview = true;
@@ -128,7 +132,7 @@ public partial class MainForm : Form
         
         
         var result = Regex.Matches(textBoxCode.Text,
-            @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)", RegexOptions.IgnoreCase);
+            _pattern, RegexOptions.IgnoreCase);
         textBoxCode.SelectionColor = Color.Orange;
         foreach (Match match in result)
         {

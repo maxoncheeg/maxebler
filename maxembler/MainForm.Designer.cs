@@ -64,6 +64,7 @@ partial class MainForm
         textBoxCode = new System.Windows.Forms.RichTextBox();
         testButton = new System.Windows.Forms.Button();
         helpProvider = new System.Windows.Forms.HelpProvider();
+        buttonRunCode = new System.Windows.Forms.Button();
         menu.SuspendLayout();
         SuspendLayout();
         // 
@@ -253,7 +254,7 @@ partial class MainForm
         // 
         buttonBack.BackgroundImage = global::maxembler.Properties.Resources.back;
         buttonBack.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        buttonBack.Location = new System.Drawing.Point(298, 30);
+        buttonBack.Location = new System.Drawing.Point(376, 30);
         buttonBack.Name = "buttonBack";
         buttonBack.Size = new System.Drawing.Size(57, 50);
         buttonBack.TabIndex = 7;
@@ -263,7 +264,7 @@ partial class MainForm
         // 
         buttonForward.BackgroundImage = global::maxembler.Properties.Resources.fw;
         buttonForward.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        buttonForward.Location = new System.Drawing.Point(361, 30);
+        buttonForward.Location = new System.Drawing.Point(439, 30);
         buttonForward.Name = "buttonForward";
         buttonForward.Size = new System.Drawing.Size(57, 50);
         buttonForward.TabIndex = 8;
@@ -273,7 +274,7 @@ partial class MainForm
         // 
         buttonCopy.BackgroundImage = global::maxembler.Properties.Resources.cpy;
         buttonCopy.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        buttonCopy.Location = new System.Drawing.Point(424, 30);
+        buttonCopy.Location = new System.Drawing.Point(502, 30);
         buttonCopy.Name = "buttonCopy";
         buttonCopy.Size = new System.Drawing.Size(57, 50);
         buttonCopy.TabIndex = 9;
@@ -283,7 +284,7 @@ partial class MainForm
         // 
         buttonCut.BackgroundImage = global::maxembler.Properties.Resources.sty;
         buttonCut.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        buttonCut.Location = new System.Drawing.Point(487, 30);
+        buttonCut.Location = new System.Drawing.Point(565, 30);
         buttonCut.Name = "buttonCut";
         buttonCut.Size = new System.Drawing.Size(57, 50);
         buttonCut.TabIndex = 10;
@@ -293,7 +294,7 @@ partial class MainForm
         // 
         buttonPaste.BackgroundImage = global::maxembler.Properties.Resources.pst;
         buttonPaste.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-        buttonPaste.Location = new System.Drawing.Point(550, 30);
+        buttonPaste.Location = new System.Drawing.Point(628, 30);
         buttonPaste.Name = "buttonPaste";
         buttonPaste.Size = new System.Drawing.Size(57, 50);
         buttonPaste.TabIndex = 11;
@@ -317,11 +318,22 @@ partial class MainForm
         testButton.Text = "SO COOL TEST BUTT";
         testButton.UseVisualStyleBackColor = true;
         // 
+        // buttonRunCode
+        // 
+        buttonRunCode.BackgroundImage = global::maxembler.Properties.Resources.Снимок_экрана_2025_03_20_130318;
+        buttonRunCode.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+        buttonRunCode.Location = new System.Drawing.Point(313, 30);
+        buttonRunCode.Name = "buttonRunCode";
+        buttonRunCode.Size = new System.Drawing.Size(57, 50);
+        buttonRunCode.TabIndex = 14;
+        buttonRunCode.UseVisualStyleBackColor = true;
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
         AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
         ClientSize = new System.Drawing.Size(926, 598);
+        Controls.Add(buttonRunCode);
         Controls.Add(testButton);
         Controls.Add(textBoxCode);
         Controls.Add(buttonPaste);
@@ -343,6 +355,8 @@ partial class MainForm
         ResumeLayout(false);
         PerformLayout();
     }
+
+    private System.Windows.Forms.Button buttonRunCode;
 
     private System.Windows.Forms.MenuStrip menu;
 
@@ -373,11 +387,11 @@ partial class MainForm
     private System.Windows.Forms.Button buttonNew;
     private Button buttonOpen;
     private Button buttonSave;
-    private Button buttonBack;
-    private Button buttonForward;
-    private Button buttonCopy;
-    private Button buttonCut;
-    private Button buttonPaste;
+    private System.Windows.Forms.Button buttonBack;
+    private System.Windows.Forms.Button buttonForward;
+    private System.Windows.Forms.Button buttonCopy;
+    private System.Windows.Forms.Button buttonCut;
+    private System.Windows.Forms.Button buttonPaste;
     private System.Windows.Forms.RichTextBox textBoxCode;
     private System.Windows.Forms.Button testButton;
     private HelpProvider helpProvider;

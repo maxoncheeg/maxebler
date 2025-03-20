@@ -145,7 +145,7 @@ namespace maxembler
         private void RunCode(object? sender, EventArgs args)
         {
             var matches = Regex.Matches(textBoxCode.Text,
-                @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)", RegexOptions.IgnoreCase);
+                _pattern, RegexOptions.IgnoreCase);
 
             var newLineIndexes = textBoxCode.Text.Index().Where(tuple => tuple.Item is '\n' or '\v')
                 .Select(tuple => tuple.Index).ToList();
