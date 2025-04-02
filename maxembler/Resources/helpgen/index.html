@@ -1,0 +1,120 @@
+<head>
+    <script src="react.development.js"></script>
+    <script src="react-dom.production.min.js"></script>
+    <script src="babel.min.js"></script>
+    <!-- <script src="https://unpkg.com/react@18.3.1/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.js"></script> -->
+</head>
+<style>
+    * {
+        box-sizing: border-box
+    }
+</style>
+<body style="background-color: rgb(155,45,48); color: white; font-family:'Cascadia Mono'; padding: 0; margin: 0">
+    <div id="root"></div>
+
+    <script type="text/babel">
+      const ListItem = ({ item, onSelect }) => {
+        const [open, setOpen] = React.useState(false);
+        return (
+          <>
+            <li style={{ fontSize: 30, cursor: 'pointer' }} onClick={() => setOpen(!open)}>
+              {item.title}
+            </li>
+            {open && (
+              <ul>
+                {item.content.map((subtitle, i) => (
+                  <li key={i} style={{ fontSize: 24, cursor: 'pointer' }} onClick={() => onSelect(subtitle)}>
+                    {subtitle.title}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </>
+
+        )
+      }
+
+      const App = () => {
+        const data = [
+          {
+            title: 'Интерфейс',
+            content: [
+              { title: 'Файл', text: `<ul>
+            <li>Создать<p>- создание нового файла</p></li>
+            <li>Открыть<p>- открыть файл</p></li>
+            <li>Сохранить<p>- сохранить файл, если он новый, появится диалоговое окно</p></li>
+            <li>Сохранить как<p>- сохранить файл через диалоговое окно</p></li>
+            <li>Выход<p>- выйти из приложение</p></li>
+        </ul>` },
+        { title: 'Правка', text: `<ul>
+            <li>Отменить<p>- вернуться на одно действие назад</p></li>
+            <li>Повторить<p>- вернуться на одно действие вперед</p></li>
+            <li>Вырезать<p>- удалить выделенный текст и добавить в буфер обмена</p></li>
+            <li>Копировать<p>- добавить текст в буфер обмена</p></li>
+            <li>Вставить<p>- вставить текст из буфера обмена</p></li>
+            <li>Удалить<p>- удалить выделенный текст</p></li>
+            <li>Выделить все<p>- выделить весь текст</p></li>
+        </ul>` },
+        { title: 'Текст', text: `<ul>
+            <li>Постановка задачи</li>
+            <li>Грамматика</li>
+            <li>Классификация грамматики</li>
+            <li>Метод анализа</li>
+            <li>Диагностика и нейтрализация ошибок</li>
+            <li>Тестовый пример</li>
+            <li>Список литературы</li>
+            <li>Исходный код программы</li>
+        </ul>` },
+        { title: 'Пуск', text: `<ul>
+            <p>Пуск - запустить процесс проверки синтаксиса</p>
+        </ul>` },
+        { title: 'Справка', text: `<ul>
+            <li>Справка</li>
+            <li>О программе</li>
+        </ul>` },
+            ],
+          },
+          {
+            title: 'Регулярные выражения',
+            content: [
+              { title: 'Паттерн', text: '(http(s)?:\/\/.)?(www\.)?([a-z0-9]+[-a-z0-9]*[a-z0-9]+\.)+[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&\/=]*)' },
+              { title: 'Примеры', text: 'https://dispace.edu.nstu.ru/diclass/discipline/index<br>test.ru<br>www.wikipedia.com<br>https://login.nstu.ru/ssoservice/XUI/#login/&realm=ido&goto=https%3A%2F%2Fdispace.edu.nstu.ru%2Fuser%2Fproceed%3Flogin%3Dopenam%26password%3Dauth', }
+            ],
+          },
+          {
+            title: 'Конечный автомат',
+            content: [
+              { title: 'Картинка', text: '<img src="automaton.png" width="600" alt="404 NOT FOUND nginx 1.18.2">' },
+              { title: 'Примеры', text: 'пака нет', }
+            ],
+          },
+        ];
+
+        const [text, setText] = React.useState(null);
+
+        return (
+          <div style={{ display: 'flex' }}>
+            <ul style={{ width: 250, display: 'flex', flexDirection: 'column', rowGap: 15, userSelect: 'none', margin: 5, flexGrow: 0, flexShrink: 0, flexBasis: 250, }}>
+                <div style={{ position:'sticky', top: 20}}>
+              {data.map((item, i) => (
+                <ListItem item={item} key={i} onSelect={setText} />
+              ))}
+                </div>
+
+            </ul>
+
+            <div style={{ fontSize: 16, backgroundColor: 'white', color: 'black', padding: '5px 0 0 30px', flex: 1, minHeight: '100vh' }}>
+              {text && <h2>{text?.title}</h2>}
+              <div dangerouslySetInnerHTML={{ __html: text?.text }}></div>
+            </div>
+          </div>
+        );
+      }
+
+      const element = <App />;
+
+      ReactDOM.createRoot(document.getElementById('root')).render(element);
+    </script>
+</body>

@@ -36,20 +36,21 @@
             // 
             webView.AllowExternalDrop = true;
             webView.CreationProperties = null;
-            webView.DefaultBackgroundColor = System.Drawing.Color.White;
-            webView.Location = new System.Drawing.Point(-2, -2);
+            webView.DefaultBackgroundColor = Color.White;
+            webView.Location = new Point(-2, -2);
             webView.Name = "webView";
-            webView.Size = new System.Drawing.Size(397, 526);
+            webView.Size = new Size(1043, 526);
             webView.TabIndex = 0;
             webView.ZoomFactor = 1D;
             // 
             // HelpForm
             // 
-            AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
-            AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            ClientSize = new System.Drawing.Size(396, 524);
+            AutoScaleDimensions = new SizeF(8F, 19F);
+            AutoScaleMode = AutoScaleMode.Font;
+            ClientSize = new Size(1040, 524);
             Controls.Add(webView);
-            FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            FormBorderStyle = FormBorderStyle.FixedToolWindow;
+            Name = "HelpForm";
             Text = "Справка";
             ((System.ComponentModel.ISupportInitialize)webView).EndInit();
             ResumeLayout(false);
