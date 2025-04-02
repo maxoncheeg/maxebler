@@ -1,13 +1,5 @@
 ﻿
-using System.Net.Http;
-using System.Reflection;
-using System.Resources;
-using System.Text;
-using System.Windows.Forms.VisualStyles;
-using maxembler.Models;
-using maxembler.Properties;
-
-namespace maxembler
+namespace maxembler.Views
 {
     public partial class HelpForm : Form
     {

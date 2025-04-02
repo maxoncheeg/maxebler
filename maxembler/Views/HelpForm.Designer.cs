@@ -1,4 +1,4 @@
-﻿namespace maxembler
+﻿namespace maxembler.Views
 {
     partial class HelpForm
     {

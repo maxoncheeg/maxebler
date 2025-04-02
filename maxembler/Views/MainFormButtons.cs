@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 
-namespace maxembler
+namespace maxembler.Views
 {
     public partial class MainForm
     {

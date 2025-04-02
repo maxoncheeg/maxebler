@@ -1,8 +1,10 @@
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using maxembler.Models;
+using maxembler.Models.StateMachines;
+using maxembler.Models.StateMachines.Abstract;
+using maxembler.Models.StateMachines.Routes;
 
-namespace maxembler;
+namespace maxembler.Views;
 
 public partial class MainForm : Form
 {
@@ -81,11 +83,12 @@ public partial class MainForm : Form
         textBoxCode.DetectUrls = false;
         testButton.Click += (_, _) =>
         {
-     
+
             var text = textBoxCode.Text;
 
             var result = Regex.Matches(text,
-                @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)", RegexOptions.IgnoreCase);
+                @"(http(s)?:\/\/.)?(www\.)?[-a-z0-9@:%._\+~#=]{2,256}\.[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&/=]*)",
+                RegexOptions.IgnoreCase);
             textBoxCode.SelectionColor = Color.Orange;
             foreach (Match match in result)
             {
@@ -94,6 +97,7 @@ public partial class MainForm : Form
                 textBoxCode.SelectionColor = Color.Orange;
                 textBoxCode.SelectionLength = 0;
             }
+
             textBoxCode.SelectionColor = Color.Black;
             textBoxCode.ForeColor = Color.Black;
         };
@@ -150,6 +154,7 @@ public partial class MainForm : Form
     private void FormLoad(object sender, EventArgs e)
     {
         NewFile(null, EventArgs.Empty);
+        Test();
     }
 
     private void SafeSave()
@@ -162,6 +167,74 @@ public partial class MainForm : Form
         if (result == DialogResult.OK)
         {
             SaveFile(null, EventArgs.Empty);
+        }
+    }
+
+
+    private void Test()
+    {
+        
+        string text =
+            "for(int i=2323;i<-12312;i++) for(int i=-1;i<+5;i++) ffor(int i=0;i>22222222222222222;i++) for(int i=0;i>222222hui22222222222;i++)";
+
+// List<IRoute> states = [
+//     //new StringRoute("aboba", "A", "B"),
+//     //ew StringRoute("abobes", "A", "B"),
+//     
+//     new RegexSymbolRoute(@"[a-z]", "A", "A"),
+//     new StringRoute(".", "A", "C"),
+//     new RegexSymbolRoute(@"[a-z]", "C", "C"),
+//     new StringRoute("/", "C", "D"),
+// ];
+
+        List<IRoute> states =
+        [
+            new StringRoute("for", "F", "E"),
+            new StringRoute("(", "E", "T"),
+            new StringRoute("int ", "T", "V"),
+            new StringRoute("i", "V", "A"),
+            new StringRoute("=", "A", "P"),
+            new RegexSymbolRoute(@"[\+\-\d]", "P", "D"),
+            new RegexSymbolRoute(@"\d", "D", "D"),
+            new StringRoute(";", "D", "C"),
+            new StringRoute("i", "C", "Q"),
+
+            new StringRoute("<", "Q", "R"),
+            new StringRoute(">", "Q", "R"), //  и тд.
+
+            new RegexSymbolRoute(@"[\+\-\d]", "R", "B"),
+            new RegexSymbolRoute(@"\d", "B", "B", "Ожидается число!"),
+            new StringRoute(";", "B", "I"),
+            new StringRoute("i++", "I", "Z"),
+            new StringRoute(")", "Z", "END"),
+        ];
+
+        textBoxCode.Text = text;
+        IFiniteStateMachine stateMachine = new FiniteStateMachine(states, "F", "END");
+        stateMachine.StateChanged += (s, e) =>
+        {
+            if (e.HasSearchCompleted)
+            {
+                textBoxError.Text += $"НАЙДЕНО: {text.Substring(e.StartIndex.Value, e.Length.Value)} {Environment.NewLine}";
+            }
+        };
+
+        stateMachine.ErrorOccurred += (s, e) =>
+        {
+            foreach (var error in e.Errors)
+            {
+                if (!string.IsNullOrEmpty(error.Error))
+                {
+                    textBoxCode.ForeColor = Color.Red;
+                    textBoxError.Text += $"{text.Substring(error.StartIndex, error.Length)}  ->>>  {error.Error}{Environment.NewLine}";
+                    textBoxCode.ForeColor = Color.Black;;
+                }
+            }
+        };
+
+        for (int i = 0; i < text.Length; i++)
+        {
+            stateMachine.PutChar(text[i], i);
         }
     }
 }
