@@ -26,14 +26,13 @@ namespace maxembler.Views
         private async void SaveFile(object? sender, EventArgs args)
         {
             SaveFileDialog dialog = new SaveFileDialog();
-            
+
             dialog.Filter = "MAXEMBLER FILE|*.mxblr";
 
             if (!string.IsNullOrEmpty(_fileName))
             {
                 dialog.FileName = _fileName;
                 await File.WriteAllTextAsync(dialog.FileName, textBoxCode.Text);
-
             }
             else if (dialog.ShowDialog() == DialogResult.OK)
             {
@@ -57,6 +56,7 @@ namespace maxembler.Views
             {
                 dialog.FileName = _fileName;
             }
+
             if (dialog.ShowDialog() == DialogResult.OK)
             {
                 await File.WriteAllTextAsync(dialog.FileName, textBoxCode.Text);
@@ -75,7 +75,7 @@ namespace maxembler.Views
             _currentIndex = 0;
             textBoxCode.Text = _fileName = string.Empty;
             _changesKeeper.AddChanges(textBoxCode.Text);
-            
+
             textBoxCode.Focus();
         }
 
@@ -109,7 +109,8 @@ namespace maxembler.Views
         private void CutText(object? sender, EventArgs args)
         {
             var copiedText = textBoxCode.SelectedText;
-            textBoxCode.Text = textBoxCode.Text[..textBoxCode.SelectionStart] + textBoxCode.Text[(textBoxCode.SelectionStart + textBoxCode.SelectionLength)..];
+            textBoxCode.Text = textBoxCode.Text[..textBoxCode.SelectionStart] +
+                               textBoxCode.Text[(textBoxCode.SelectionStart + textBoxCode.SelectionLength)..];
             if (!string.IsNullOrEmpty(copiedText))
                 Clipboard.SetText(copiedText);
 
@@ -154,7 +155,7 @@ namespace maxembler.Views
             string result = "";
             result += $"\tВсего найдено ссылок: {matches.Count}{Environment.NewLine}";
             if (matches.Count > 0) result += $"Результаты:{Environment.NewLine}";
-            
+
             int position = 0, line = 0;
             foreach (Match match in matches)
             {
@@ -165,11 +166,51 @@ namespace maxembler.Views
                     line = i + 1;
                     break;
                 }
-                
+
                 result += $"({line}:{position}): {match.Value}{Environment.NewLine}";
             }
-            
+
             textBoxError.Text = result;
+        }
+
+        private void RunFiniteStateCode(object? sender, EventArgs args)
+        {
+            _urlStateMachine.Reset();
+
+            var text = textBoxCode.Text + " ";
+            textBoxError.Text = string.Empty;
+
+            _urlStateMachine.ErrorOccurred += (o, eventArgs) =>
+            {
+                foreach (var error in eventArgs.Errors)
+                {
+                    if (error.Text != "")
+                        textBoxError.Text += $"pos:{error.Position}| {error.Text}{Environment.NewLine}";
+                }
+            };
+
+            _urlStateMachine.StateChanged += (o, e) =>
+            {
+                if (e.HasSearchCompleted)
+                {
+                    textBoxError.Text +=
+                        $"НАЙДЕНО:{text.Substring(e.StartIndex.Value, e.Length.Value)}{Environment.NewLine}{Environment.NewLine}";
+                    Console.WriteLine($"{e.PreviousState} -> {e.Route} -> {e.CurrentState} | {text.Substring(e.StartIndex.Value, e.Length.Value)}");
+                    Console.WriteLine();
+                    Console.WriteLine();
+                }
+                else
+                {
+                    textBoxError.Text += $"{e.PreviousState} -> {e.CurrentState} |";
+                    Console.WriteLine($"{e.PreviousState} -> {(e.Route.Contains("\n") ? "newline or space" : e.Route)} -> {e.CurrentState} | {text.Substring(e.StartIndex.Value, e.Length.Value)}");
+                }
+            };
+
+
+            for (int i = 0; i < text.Length; i++)
+            {
+                _urlStateMachine.PutChar(text[i], i);
+            }
         }
     }
 }

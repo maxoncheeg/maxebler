@@ -65,6 +65,8 @@ partial class MainForm
         testButton = new System.Windows.Forms.Button();
         helpProvider = new System.Windows.Forms.HelpProvider();
         buttonRunCode = new System.Windows.Forms.Button();
+        runRegex = new System.Windows.Forms.ToolStripMenuItem();
+        runUrlStateMachine = new System.Windows.Forms.ToolStripMenuItem();
         menu.SuspendLayout();
         SuspendLayout();
         // 
@@ -187,6 +189,7 @@ partial class MainForm
         // runCode
         // 
         runCode.BackColor = System.Drawing.Color.FromArgb(((int)((byte)205)), ((int)((byte)212)), ((int)((byte)240)));
+        runCode.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] { runRegex, runUrlStateMachine });
         runCode.Image = ((System.Drawing.Image)resources.GetObject("runCode.Image"));
         runCode.Name = "runCode";
         runCode.Size = new System.Drawing.Size(71, 23);
@@ -328,6 +331,18 @@ partial class MainForm
         buttonRunCode.TabIndex = 14;
         buttonRunCode.UseVisualStyleBackColor = true;
         // 
+        // runRegex
+        // 
+        runRegex.Name = "runRegex";
+        runRegex.Size = new System.Drawing.Size(206, 24);
+        runRegex.Text = "Regex";
+        // 
+        // runUrlStateMachine
+        // 
+        runUrlStateMachine.Name = "runUrlStateMachine";
+        runUrlStateMachine.Size = new System.Drawing.Size(206, 24);
+        runUrlStateMachine.Text = "Конечный автомат";
+        // 
         // MainForm
         // 
         AutoScaleDimensions = new System.Drawing.SizeF(8F, 19F);
@@ -356,6 +371,9 @@ partial class MainForm
         PerformLayout();
     }
 
+    private System.Windows.Forms.ToolStripMenuItem runRegex;
+    private System.Windows.Forms.ToolStripMenuItem runUrlStateMachine;
+
     private System.Windows.Forms.Button buttonRunCode;
 
     private System.Windows.Forms.MenuStrip menu;
@@ -379,7 +397,7 @@ partial class MainForm
     private ToolStripMenuItem текстToolStripMenuItem;
     private ToolStripMenuItem постановкаЗадачиToolStripMenuItem;
     private ToolStripMenuItem иТакДалееToolStripMenuItem;
-    private ToolStripMenuItem runCode;
+    private System.Windows.Forms.ToolStripMenuItem runCode;
     private ToolStripMenuItem справкаToolStripMenuItem;
     private ToolStripMenuItem help;
     private ToolStripMenuItem оПрограммеToolStripMenuItem;

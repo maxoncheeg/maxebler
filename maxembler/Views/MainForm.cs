@@ -12,6 +12,8 @@ public partial class MainForm : Form
     private bool _textCommand = false;
     private int _currentIndex = 0;
 
+    
+    private IFiniteStateMachine _urlStateMachine;
     private readonly string _pattern =
         @"(http(s)?:\/\/.)?(www\.)?([a-z0-9]+[-a-z0-9]*[a-z0-9]+\.)+[a-z]{2,63}([-a-zA-Z0-9@:%_\+.~#?&\/=]*)";
 
@@ -63,7 +65,9 @@ public partial class MainForm : Form
             helpForm.ShowDialog();
         };
 
-        runCode.Click += RunCode;
+        //runCode.Click += RunFiniteStateCode;
+        runUrlStateMachine.Click += RunFiniteStateCode;
+        runRegex.Click += RunCode;
         buttonRunCode.Click += RunCode;
         textBoxError.ReadOnly = true;
 
@@ -154,7 +158,9 @@ public partial class MainForm : Form
     private void FormLoad(object sender, EventArgs e)
     {
         NewFile(null, EventArgs.Empty);
-        Test();
+        //Test();
+
+        InitUrlStateMachine();
     }
 
     private void SafeSave()
@@ -169,72 +175,31 @@ public partial class MainForm : Form
             SaveFile(null, EventArgs.Empty);
         }
     }
-
-
-    private void Test()
+    
+    private void InitUrlStateMachine()
     {
-        
-        string text =
-            "for(int i=2323;i<-12312;i++) for(int i=-1;i<+5;i++) ffor(int i=0;i>22222222222222222;i++) for(int i=0;i>222222hui22222222222;i++)";
-
-// List<IRoute> states = [
-//     //new StringRoute("aboba", "A", "B"),
-//     //ew StringRoute("abobes", "A", "B"),
-//     
-//     new RegexSymbolRoute(@"[a-z]", "A", "A"),
-//     new StringRoute(".", "A", "C"),
-//     new RegexSymbolRoute(@"[a-z]", "C", "C"),
-//     new StringRoute("/", "C", "D"),
-// ];
-
         List<IRoute> states =
         [
-            new StringRoute("for", "F", "E"),
-            new StringRoute("(", "E", "T"),
-            new StringRoute("int ", "T", "V"),
-            new StringRoute("i", "V", "A"),
-            new StringRoute("=", "A", "P"),
-            new RegexSymbolRoute(@"[\+\-\d]", "P", "D"),
-            new RegexSymbolRoute(@"\d", "D", "D"),
-            new StringRoute(";", "D", "C"),
-            new StringRoute("i", "C", "Q"),
-
-            new StringRoute("<", "Q", "R"),
-            new StringRoute(">", "Q", "R"), //  и тд.
-
-            new RegexSymbolRoute(@"[\+\-\d]", "R", "B"),
-            new RegexSymbolRoute(@"\d", "B", "B", "Ожидается число!"),
-            new StringRoute(";", "B", "I"),
-            new StringRoute("i++", "I", "Z"),
-            new StringRoute(")", "Z", "END"),
+            new StringRoute(@"https://", "A", "C"),
+            new StringRoute(@"http://", "A", "C"),
+            new StringRoute(@"www.", "A", "C"),
+            
+            new RegexSymbolRoute(@"[a-z]", "C", "V"), // subdomen.
+            new RegexSymbolRoute(@"[a-z]", "V", "V"),
+            
+            new StringRoute(".", "V", "D"),
+            new RegexSymbolRoute(@"[a-z]", "D", "V"), // domen
+            
+            new StringRoute(@"/", "V", "E"),
+            new CharVariantRoute(['\n', ' '], "V", "G"),
+            
+            new RegexSymbolRoute(@"[a-zA-Z\#\.\%\=\?\d\&]", "E", "F"),
+            new RegexSymbolRoute(@"[a-zA-Z\#\.\%\=\?\d\&]", "F", "F"),
+            new StringRoute(@"/", "F", "E"),
+            new CharVariantRoute(['\n', ' '], "F", "G"),
+            new CharVariantRoute(['\n', ' '], "E", "G"),
         ];
 
-        textBoxCode.Text = text;
-        IFiniteStateMachine stateMachine = new FiniteStateMachine(states, "F", "END");
-        stateMachine.StateChanged += (s, e) =>
-        {
-            if (e.HasSearchCompleted)
-            {
-                textBoxError.Text += $"НАЙДЕНО: {text.Substring(e.StartIndex.Value, e.Length.Value)} {Environment.NewLine}";
-            }
-        };
-
-        stateMachine.ErrorOccurred += (s, e) =>
-        {
-            foreach (var error in e.Errors)
-            {
-                if (!string.IsNullOrEmpty(error.Error))
-                {
-                    textBoxCode.ForeColor = Color.Red;
-                    textBoxError.Text += $"{text.Substring(error.StartIndex, error.Length)}  ->>>  {error.Error}{Environment.NewLine}";
-                    textBoxCode.ForeColor = Color.Black;;
-                }
-            }
-        };
-
-        for (int i = 0; i < text.Length; i++)
-        {
-            stateMachine.PutChar(text[i], i);
-        }
+        _urlStateMachine = new FiniteStateMachine(states, "A", "G");
     }
 }
